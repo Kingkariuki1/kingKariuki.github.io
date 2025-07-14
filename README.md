@@ -4,7 +4,7 @@ This is the official personal website of King Kariuki – Creative Entrepreneur,
 
 ## Website
 
-Live site: [https://kingkariuki.github.io](https://kingkariuki1.github.io/kingKariuki.github.io/)
+Live site: [https://kingkariuki.github.io/kingkariuki.github.io](https://kingkariuki1.github.io/kingKariuki.github.io/)
 
 ## Services
 
