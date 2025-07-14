@@ -1,0 +1,275 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact King Kariuki for digital services and branding solutions at Evarlic Kenya.">
+  <meta name="keywords" content="King Kariuki, Evarlic Kenya, contact, digital services, branding">
+  <meta property="og:title" content="Contact Us | King Kariuki">
+  <meta property="og:description" content="Reach out to King Kariuki for trusted digital and creative services.">
+  <meta property="og:image" content="/images/hero-bg.webp">
+  <meta property="og:url" content="https://kingkariuki.com/contact.html">
+  <title>Contact Us | King Kariuki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #D4AF37;
+      --black: #000000;
+      --white: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background-color: var(--black);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      z-index: 999;
+      animation: slideDown 1s ease forwards;
+    }
+
+    header h1 {
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    nav a:hover,
+    nav a[aria-current="page"] {
+      color: var(--gold);
+    }
+
+    .section {
+      padding: 4rem 2rem;
+      text-align: center;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    .section h2 {
+      color: var(--gold);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-form {
+      max-width: 500px;
+      margin: 2rem auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .contact-form label {
+      text-align: left;
+      color: var(--gold);
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 0.5rem;
+      border: 1px solid var(--gold);
+      background-color: #111;
+      color: var(--white);
+      border-radius: 5px;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .contact-form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .contact-form button {
+      padding: 0.8rem 1.5rem;
+      background-color: var(--gold);
+      color: var(--black);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .contact-form button:hover {
+      background-color: #b68e2d;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .social-links a {
+      color: var(--white);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--gold);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background-color: #0a0a0a;
+      color: var(--white);
+      font-size: 0.9rem;
+      animation: fadeIn 3s ease-in-out;
+    }
+
+    footer a {
+      color: var(--gold);
+      text-decoration: underline;
+    }
+
+    .whatsapp-float {
+      position: fixed;
+      width: 50px;
+      height: 50px;
+      bottom: 25px;
+      right: 25px;
+      background-color: #25D366;
+      color: white;
+      border-radius: 50px;
+      text-align: center;
+      font-size: 24px;
+      box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .whatsapp-float:hover {
+      background-color: #1ebe5d;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      0% { transform: translateY(-100%); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>King Kariuki</h1>
+    <nav role="navigation">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="contact.html" aria-current="page">Contact Us</a>
+    </nav>
+  </header>
+
+  <section class="section">
+    <h2>Contact Us</h2>
+    <p>Let’s work together to make your brand or application journey seamless. Fill out the form below or reach out via WhatsApp or email.</p>
+    <form class="contact-form" action="submit-form.php" method="POST">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+    <p>Email: <a href="mailto:kingkariukiofficial@gmail.com" style="color: var(--gold); text-decoration: underline;">kingkariukiofficial@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/254708061127" style="color: var(--gold); text-decoration: underline;">+254 708 061127</a></p>
+    <div class="social-links">
+      <a href="https://www.tiktok.com/@kingkariukikenya" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.facebook.com/kingkariukikenya" target="_blank" rel="noopener">Facebook</a>
+      <a href="https://www.youtube.com/@kingkariukikenya" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.instagram.com/kingkariukikenya/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </section>
+
+  <a href="https://wa.me/254708061127" class="whatsapp-float" target="_blank" title="Chat on WhatsApp" aria-label="Contact King Kariuki on WhatsApp">
+    ✉
+  </a>
+
+  <footer>
+    <p>© <span id="year"></span> King Kariuki. All rights reserved.</p>
+    <p>Website by <a href="https://www.instagram.com/kingkariukikenya/" target="_blank" rel="noopener">@kingkariukikenya</a></p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
